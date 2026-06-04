@@ -3,319 +3,406 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>给悦悦宝的专属惊喜</title>
+    <title>Yueyue's Surprise</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body {
-            overflow-x: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
-            color: #333;
-        }
-        #intro-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 1000; transition: opacity 1s ease;
-        }
-        .big-heart {
-            font-size: 100px; color: #ff4d6d; cursor: pointer;
-            animation: heartbeat 1.2s infinite; text-shadow: 0 0 30px rgba(255, 77, 109, 0.6);
-            margin-bottom: 20px; user-select: none;
-        }
-        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
-        .intro-text { color: white; font-size: 24px; font-weight: bold; animation: fadeIn 1s ease 0.5s forwards; opacity: 0; }
-        @keyframes fadeIn { to { opacity: 1; } }
-        #main-stage {
-            display: none; width: 100%; min-height: 100vh;
-            background: linear-gradient(to bottom, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-            overflow-y: auto; position: relative; padding-bottom: 50px;
-        }
-        .bg-deco { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
-        .cloud { font-size: 50px; position: absolute; animation: float 8s ease-in-out infinite; opacity: 0.6; }
-        .sakura { font-size: 20px; color: #ffb7b2; position: absolute; animation: fall 10s linear infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        @keyframes fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
-        .container { position: relative; z-index: 10; width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        
-        /* 照片轮播样式 */
-        .photo-section { text-align: center; margin-bottom: 30px; width: 100%; }
-        .section-title { font-size: 22px; color: #ff4d6d; margin-bottom: 15px; font-weight: bold; text-shadow: 1px 1px 0px white; }
-        .photo-slider {
-            display: flex;
-            width: 100%;
-            height: 250px; /* 图片高度 */
-            overflow: hidden;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            background: white;
-        }
-        .photo-slide {
-            min-width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            animation: slideIn 0.5s ease-out;
-        }
-        .photo-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 15px;
-        }
-        .photo-slide .placeholder {
-            font-size: 60px;
-            color: #ffb7b2;
-        }
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
+        /* --- 全局样式 --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .letter-section { background: rgba(255, 255, 255, 0.9); padding: 25px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); margin-bottom: 30px; width: 100%; text-align: center; }
-        .letter-text { font-size: 18px; line-height: 1.8; color: #555; min-height: 100px; }
-        .action-btn { background: linear-gradient(45deg, #ff4d6d, #ff6b81); color: white; border: none; padding: 18px 50px; font-size: 20px; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4); transition: transform 0.2s, box-shadow 0.2s; font-weight: bold; margin-bottom: 20px; width: 100%; max-width: 300px; }
-        .action-btn:active { transform: scale(0.95); }
-        .lyrics-scroll { width: 100%; background: rgba(255,255,255,0.8); border-radius: 15px; padding: 15px; margin-top: 20px; text-align: center; font-style: italic; color: #ff4d6d; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .footer { margin-top: 40px; font-size: 14px; color: #999; text-align: center; }
-        #love-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
-        .floating-text { position: fixed; font-size: 24px; color: #ff4d6d; font-weight: bold; animation: floatUp 1.5s forwards; z-index: 1000; pointer-events: none; text-shadow: 0 0 5px white; }
-        @keyframes floatUp { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 20% { transform: translateY(-20px) scale(1.2); opacity: 1; } 100% { transform: translateY(-100px) scale(1); opacity: 0; } }
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            overflow-x: hidden;
+            color: #333;
+        }
+
+        /* 背景装饰 */
+        .bg-cloud {
+            position: fixed;
+            top: 10%;
+            left: 5%;
+            font-size: 100px;
+            opacity: 0.8;
+            z-index: -1;
+            animation: float 6s ease-in-out infinite;
+        }
+        .bg-cloud:nth-child(2) {
+            top: 20%;
+            right: 5%;
+            font-size: 80px;
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 标题 */
+        h1 {
+            font-size: 2rem;
+            color: #ff4d6d;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* 爱心按钮 */
+        .heart-btn {
+            font-size: 4rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            animation: beat 1s infinite;
+            margin: 20px 0;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .heart-btn:active {
+            transform: scale(0.9);
+        }
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* 幻灯片区域 */
+        .slider-container {
+            width: 100%;
+            height: 400px; /* 稍微调高一点，单张图更清晰 */
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        /* 图片样式 */
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 保持比例填满 */
+            display: block;
+        }
+
+        /* 文字信件区域 */
+        .letter-box {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .letter-title {
+            font-size: 1.2rem;
+            color: #ff4d6d;
+            margin-bottom: 10px;
+            font-weight: bold;
+            border-bottom: 2px dashed #ff4d6d;
+            padding-bottom: 5px;
+        }
+
+        .letter-content {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #555;
+            white-space: pre-wrap;
+            min-height: 60px;
+        }
+
+        /* 互动按钮 */
+        .hug-btn {
+            background: linear-gradient(45deg, #ff4d6d, #ff8fa3);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .hug-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 5px rgba(255, 77, 109, 0.4);
+        }
+
+        .hint {
+            margin-top: 15px;
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        @media (max-width: 480px) {
+            .slider-container { height: 350px; }
+            h1 { font-size: 1.5rem; }
+            .letter-content { font-size: 0.9rem; }
+        }
     </style>
 </head>
 <body>
-    <div id="intro-screen">
-        <div class="big-heart" onclick="enterSite()">❤️</div>
-        <div class="intro-text">点击爱心，开启我们的故事</div>
-    </div>
-    <div id="main-stage">
-        <div class="bg-deco" id="bg-deco"></div>
-        <canvas id="love-canvas"></canvas>
-        <div class="container">
-            <div class="photo-section">
-                <div class="section-title">📸 我们的甜蜜瞬间</div>
-                <div class="photo-slider" id="photoSlider">
-                    <!-- 照片将通过 JS 自动生成 -->
-                </div>
-            </div>
-            <div class="letter-section">
-                <div class="section-title" style="font-size: 18px; margin-bottom: 10px;">💌 写给悦悦宝</div>
-                <div class="letter-text" id="typewriter"></div>
-            </div>
-            <button class="action-btn" onclick="triggerSurprise()">点击领取抱抱 🤗</button>
-            <div class="lyrics-scroll" id="lyrics">正在播放背景音乐...</div>
-            <div class="footer">Made with ❤️ for 悦悦宝<br>2024.06.04</div>
+
+    <div class="bg-cloud">☁️</div>
+    <div class="bg-cloud">☁️</div>
+
+    <div class="container">
+        <h1>Yueyue's Surprise</h1>
+        <div class="heart-btn" id="startHeart">❤️</div>
+
+        <div class="slider-container" id="slider">
+            <!-- 图片将由 JS 动态生成 -->
         </div>
+
+        <div class="letter-box">
+            <div class="letter-title">写给悦悦宝</div>
+            <div class="letter-content" id="letterText"></div>
+        </div>
+
+        <button class="hug-btn" id="hugBtn">给我一个抱抱 (Hug) 🤗</button>
+        <div class="hint">点击爱心开始，点击抱抱接收爱意</div>
     </div>
+
+    <audio id="bgm" loop>
+        <source src="bgm.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
         // --- 配置区域 ---
-        const messages = [
-            "亲爱的悦悦宝，",
-            "今天天气很好，就像你一样可爱。",
-            "想告诉你，你是我生活中最温暖的阳光。",
-            "谢谢你来到我的世界里，让我变得更好。",
-            "以后的每一天，我都会一直陪在你身边。",
-            "永远爱你，永远！❤️"
-        ];
-        const lyrics = ["当你出现在我的身边", "世界突然变得好温暖", "想和你一起看遍所有风景", "做我最幸福的小公主"];
-        const slideIntervalTime = 5000; // 图片切换时间 (毫秒), 5000 = 5 秒
-        // --------------------------------
+        const config = {
+            // 确保文件名是 1.jpg 到 10.jpg
+            images: [
+                '1.jpg', '2.jpg', '3.jpg', '4.jpg', 
+                '5.jpg', '6.jpg', '7.jpg', '8.jpg', 
+                '9.jpg', '10.jpg'
+            ],
+            // 每次显示几张 (现在是 1，单张播放)
+            slidesToShow: 1, 
+            // 切换间隔 (毫秒)
+            interval: 5000,
+            // 信件内容
+            messages: [
+                "亲爱的悦悦宝，\n\n遇见你，是我这辈子最幸运的事。",
+                "看着你的照片，\n我就忍不住想一直一直喜欢你。",
+                "愿我的爱，\n能像这漫天星光一样包围着你。",
+                "悦悦，\n未来的每一天，我都想陪在你身边。",
+                "今天也是\n超级超级爱你的一天！\n\n永远爱你的，\n你的专属摄影师"
+            ]
+        };
 
-        function enterSite() {
-            document.getElementById('intro-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('intro-screen').style.display = 'none';
-                document.getElementById('main-stage').style.display = 'block';
-                initBackground();
-                startMusic();
-                startTyping();
-                initRain();
-                initPhotoSlider(); // 初始化照片轮播
-                startPhotoSlider(); // 启动轮播定时器
-            }, 800);
-        }
+        let currentSlideIndex = 0;
+        let slideInterval = null;
+        let isPlaying = false;
+        let isTyping = false;
+        let bgmElement = document.getElementById('bgm');
 
-        function startTyping() {
-            const el = document.getElementById('typewriter');
-            el.innerHTML = '';
-            let i = 0;
-            function type() {
-                if (i < messages.length) {
-                    const line = messages[i];
-                    el.innerHTML = '';
-                    for(let j=0; j<line.length; j++) {
-                        el.innerHTML += line.charAt(j);
-                        setTimeout(type, 100);
-                        return;
-                    }
-                    i++;
-                    setTimeout(type, 600);
-                }
-            }
-            type();
-        }
-
-        function startMusic() {
-            const audio = new Audio('bgm.mp3');
-            audio.loop = true;
-            audio.volume = 0.5;
-            audio.play().catch(e => console.log("音乐需交互"));
-            let lIndex = 0;
-            setInterval(() => {
-                lIndex = (lIndex + 1) % lyrics.length;
-                document.getElementById('lyrics').innerText = lyrics[lIndex];
-            }, 3000);
-        }
-
-        function triggerSurprise() {
-            startRain();
-            const praises = ["好可爱！", "真漂亮！", "我最喜欢的悦悦宝！", "抱抱！", "爱你！", "你是我的宝藏！"];
-            const txt = praises[Math.floor(Math.random() * praises.length)];
-            const el = document.createElement('div');
-            el.className = 'floating-text';
-            el.innerText = txt;
-            el.style.left = Math.random() * 80 + 10 + '%';
-            el.style.top = '40%';
-            document.body.appendChild(el);
-            setTimeout(() => el.remove(), 1500);
-            const btn = document.querySelector('.action-btn');
-            btn.innerText = "再抱一个！";
-            btn.style.background = "#ff6b81";
-            setTimeout(() => { btn.innerText = "点击领取抱抱 🤗"; btn.style.background = ""; }, 2000);
-        }
-
-        function initBackground() {
-            const container = document.getElementById('bg-deco');
-            for(let i=0; i<10; i++) {
-                const type = Math.random() > 0.5 ? 'cloud' : 'sakura';
-                const el = document.createElement('div');
-                el.className = type;
-                el.innerText = type === 'cloud' ? '☁️' : '🌸';
-                el.style.left = Math.random() * 100 + '%';
-                el.style.top = Math.random() * 100 + '%';
-                el.style.animationDelay = Math.random() * 5 + 's';
-                el.style.animationDuration = (Math.random() * 5 + 5) + 's';
-                container.appendChild(el);
-            }
-        }
-
-        // --- 照片轮播逻辑 ---
-        let currentSlide = 0;
-        let slideTimer = null;
-
-        function initPhotoSlider() {
-            const slider = document.getElementById('photoSlider');
-            const totalPhotos = 10; // 总共有 10 张照片
-            const photosPerSlide = 2; // 每次显示 2 张
-            
-            // 创建所有照片的容器
-            for (let i = 1; i <= totalPhotos; i++) {
-                const div = document.createElement('div');
-                div.className = 'photo-slide';
-                div.id = `slide-${i}`;
+        // 初始化幻灯片结构
+        function initSlider() {
+            const sliderContainer = document.getElementById('slider');
+            sliderContainer.innerHTML = '';
+            config.images.forEach((imgSrc, index) => {
+                const slide = document.createElement('div');
+                slide.className = `slide ${index === 0 ? 'active' : ''}`;
                 
                 const img = document.createElement('img');
-                // 修改这里：直接读取根目录下的 1.jpg 到 10.jpg
-                img.src = `${i}.jpg`; 
-                img.alt = `photo${i}`;
-                img.onerror = function() { 
-                    this.style.display='none'; 
-                    this.nextElementSibling.style.display='block'; 
+                img.src = imgSrc;
+                img.alt = `Photo ${index + 1}`;
+                img.onerror = function() {
+                    this.src = 'https://via.placeholder.com/600x400/ffcccc/ff4d6d?text=Missing+Image';
                 };
                 
-                const placeholder = document.createElement('div');
-                placeholder.className = 'placeholder';
-                placeholder.innerText = '📷';
-                
-                div.appendChild(img);
-                div.appendChild(placeholder);
-                slider.appendChild(div);
-            }
-
-            // 初始化第一组 (0 和 1)
-            currentSlide = 0;
-            showSlide();
+                slide.appendChild(img);
+                sliderContainer.appendChild(slide);
+            });
         }
 
-        function showSlide() {
-            // 隐藏所有
-            const slides = document.querySelectorAll('.photo-slide');
-            slides.forEach(s => s.style.display = 'none');
+        // 图片预加载
+        function preloadImages() {
+            let loadedCount = 0;
+            config.images.forEach((imgSrc, index) => {
+                const img = new Image();
+                img.src = imgSrc;
+                img.onload = () => {
+                    loadedCount++;
+                    if (loadedCount === config.images.length) {
+                        startSlideshow();
+                    }
+                };
+                img.onerror = () => {
+                    loadedCount++;
+                    if (loadedCount === config.images.length) {
+                        startSlideshow();
+                    }
+                };
+            });
+        }
+
+        // 幻灯片逻辑 (单张循环)
+        function startSlideshow() {
+            isPlaying = true;
             
-            // 显示当前组
-            const start = currentSlide * 2;
-            if (start < slides.length) {
-                slides[start].style.display = 'flex';
-                if (start + 1 < slides.length) {
-                    slides[start + 1].style.display = 'flex';
+            slideInterval = setInterval(() => {
+                if (!isPlaying) return;
+
+                const currentSlides = document.querySelectorAll('.slide');
+                currentSlides.forEach(slide => {
+                    slide.classList.remove('active');
+                });
+
+                // 移动到下一张
+                currentSlideIndex = (currentSlideIndex + 1) % config.images.length;
+                
+                // 显示当前图片
+                const newSlides = document.querySelectorAll('.slide');
+                if (newSlides[currentSlideIndex]) {
+                    newSlides[currentSlideIndex].classList.add('active');
                 }
+
+                // 更新文字
+                updateLetter();
+
+            }, config.interval);
+        }
+
+        function updateLetter() {
+            const msgIndex = currentSlideIndex % config.messages.length;
+            const text = config.messages[msgIndex];
+            
+            if (isTyping) return;
+            
+            document.getElementById('letterText').innerText = "";
+            typeWriter(text, 0);
+        }
+
+        function typeWriter(text, i) {
+            isTyping = true;
+            if (i < text.length) {
+                document.getElementById('letterText').innerHTML += text.charAt(i);
+                setTimeout(() => typeWriter(text, i + 1), 50);
+            } else {
+                isTyping = false;
             }
         }
 
-        function startPhotoSlider() {
-            if (slideTimer) clearInterval(slideTimer);
-            slideTimer = setInterval(() => {
-                currentSlide++;
-                if (currentSlide > 4) { // 4 组 * 2 张 = 8 张？不对，10 张照片，4 组 (0,1), (2,3), (4,5), (6,7), (8,9) 是 5 组
-                    currentSlide = 0;
-                }
-                showSlide();
-            }, slideIntervalTime);
+        // 音乐播放
+        function playMusic() {
+            if (!bgmElement) return;
+            const playPromise = bgmElement.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.warn("音乐播放被阻止或文件未找到");
+                });
+            }
         }
 
-        // 爱心雨
-        const canvas = document.getElementById('love-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        function initRain() {
+        // 事件监听
+        const startHeart = document.getElementById('startHeart');
+        const hugBtn = document.getElementById('hugBtn');
+
+        startHeart.addEventListener('click', () => {
+            startHeart.style.display = 'none';
+            playMusic();
+            preloadImages();
+        });
+
+        hugBtn.addEventListener('click', () => {
+            hugBtn.innerText = "啾咪! (Kiss) 💋";
+            setTimeout(() => hugBtn.innerText = "给我一个抱抱 (Hug) 🤗", 2000);
+            playMusic();
+            createHeartRain();
+        });
+
+        // 爱心雨效果
+        function createHeartRain() {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
-        }
-        function startRain() {
-            if (particles.length > 0) return;
-            for(let i=0; i<100; i++) particles.push(new Particle());
-            animateRain();
-        }
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = -20;
-                this.size = Math.random() * 10 + 5;
-                this.speedY = Math.random() * 3 + 2;
-                this.speedX = Math.random() * 2 - 1;
-                this.color = `hsl(${Math.random() * 40 + 340}, 100%, 70%)`;
-                this.rotation = Math.random() * 360;
-                this.rotationSpeed = Math.random() * 2 - 1;
+            document.body.appendChild(canvas);
+
+            const hearts = [];
+            const heartCount = 50;
+
+            for (let i = 0; i < heartCount; i++) {
+                hearts.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    size: Math.random() * 20 + 10,
+                    speed: Math.random() * 5 + 2,
+                    color: `hsl(${Math.random() * 60 + 330}, 100%, 60%)`
+                });
             }
-            update() {
-                this.y += this.speedY;
-                this.x += this.speedX;
-                this.rotation += this.rotationSpeed;
-                if (this.y > canvas.height) { this.y = -20; this.x = Math.random() * canvas.width; }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                hearts.forEach(heart => {
+                    ctx.fillStyle = heart.color;
+                    ctx.font = `${heart.size}px Arial`;
+                    ctx.fillText('❤️', heart.x, heart.y);
+                    heart.y += heart.speed;
+                    if (heart.y > canvas.height) {
+                        heart.y = -20;
+                        heart.x = Math.random() * canvas.width;
+                    }
+                });
+                requestAnimationFrame(draw);
             }
-            draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.rotation * Math.PI / 180);
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.moveTo(0, 0);
-                ctx.bezierCurveTo(0, -this.size / 2, -this.size / 2, -this.size, -this.size / 2, -this.size / 2);
-                ctx.bezierCurveTo(-this.size / 2, -this.size / 2, 0, -this.size / 2, 0, -this.size / 2);
-                ctx.bezierCurveTo(0, -this.size / 2, this.size / 2, -this.size / 2, this.size / 2, -this.size / 2);
-                ctx.bezierCurveTo(this.size / 2, -this.size / 2, this.size / 2, -this.size, this.size / 2, -this.size / 2);
-                ctx.bezierCurveTo(this.size / 2, -this.size, 0, -this.size / 2, 0, 0);
-                ctx.fill();
-                ctx.restore();
-            }
+
+            let duration = 0;
+            const interval = setInterval(() => {
+                duration += 10;
+                draw();
+                if (duration > 3000) {
+                    clearInterval(interval);
+                    canvas.remove();
+                }
+            }, 10);
         }
-        function animateRain() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            requestAnimationFrame(animateRain);
-        }
+
+        // 初始化
+        initSlider();
+
     </script>
 </body>
 </html>
