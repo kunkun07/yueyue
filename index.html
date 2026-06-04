@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>给悦悦宝的专属惊喜</title>
     <style>
-        /* --- 全局重置 --- */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
             overflow-x: hidden;
@@ -13,254 +12,72 @@
             background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
             color: #333;
         }
-
-        /* --- 第一幕：开场动画 --- */
         #intro-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at center, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            transition: opacity 1s ease;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 1000; transition: opacity 1s ease;
         }
         .big-heart {
-            font-size: 100px;
-            color: #ff4d6d;
-            cursor: pointer;
-            animation: heartbeat 1.2s infinite;
-            text-shadow: 0 0 30px rgba(255, 77, 109, 0.6);
-            margin-bottom: 20px;
-            user-select: none;
+            font-size: 100px; color: #ff4d6d; cursor: pointer;
+            animation: heartbeat 1.2s infinite; text-shadow: 0 0 30px rgba(255, 77, 109, 0.6);
+            margin-bottom: 20px; user-select: none;
         }
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
-        .intro-text {
-            color: white;
-            font-size: 24px;
-            font-weight: bold;
-            animation: fadeIn 1s ease 0.5s forwards;
-            opacity: 0;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+        @keyframes heartbeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        .intro-text { color: white; font-size: 24px; font-weight: bold; animation: fadeIn 1s ease 0.5s forwards; opacity: 0; }
         @keyframes fadeIn { to { opacity: 1; } }
-
-        /* --- 第二幕：主舞台 (自适应手机) --- */
         #main-stage {
-            display: none;
-            width: 100%;
-            min-height: 100vh;
+            display: none; width: 100%; min-height: 100vh;
             background: linear-gradient(to bottom, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-            overflow-y: auto;
-            position: relative;
-            padding-bottom: 50px;
+            overflow-y: auto; position: relative; padding-bottom: 50px;
         }
-
-        /* 背景装饰层 */
-        .bg-deco {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
+        .bg-deco { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
         .cloud { font-size: 50px; position: absolute; animation: float 8s ease-in-out infinite; opacity: 0.6; }
         .sakura { font-size: 20px; color: #ffb7b2; position: absolute; animation: fall 10s linear infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         @keyframes fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
-
-        /* 内容容器：始终居中 */
-        .container {
-            position: relative;
-            z-index: 10;
-            width: 100%;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* 1. 照片墙区域 */
-        .photo-section {
-            text-align: center;
-            margin-bottom: 30px;
-            width: 100%;
-        }
-        .section-title {
-            font-size: 22px;
-            color: #ff4d6d;
-            margin-bottom: 15px;
-            font-weight: bold;
-            text-shadow: 1px 1px 0px white;
-        }
-        .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            width: 100%;
-        }
-        .photo-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            aspect-ratio: 1/1;
-            position: relative;
-        }
-        .photo-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .photo-card .placeholder {
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 40px;
-            color: #ffb7b2;
-        }
-
-        /* 2. 告白信区域 */
-        .letter-section {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-            margin-bottom: 30px;
-            width: 100%;
-            text-align: center;
-        }
-        .letter-text {
-            font-size: 18px;
-            line-height: 1.8;
-            color: #555;
-            min-height: 100px;
-        }
-
-        /* 3. 互动按钮 */
-        .action-btn {
-            background: linear-gradient(45deg, #ff4d6d, #ff6b81);
-            color: white;
-            border: none;
-            padding: 18px 50px;
-            font-size: 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
-            transition: transform 0.2s, box-shadow 0.2s;
-            font-weight: bold;
-            margin-bottom: 20px;
-            width: 100%;
-            max-width: 300px;
-        }
+        .container { position: relative; z-index: 10; width: 100%; max-width: 600px; margin: 0 auto; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .photo-section { text-align: center; margin-bottom: 30px; width: 100%; }
+        .section-title { font-size: 22px; color: #ff4d6d; margin-bottom: 15px; font-weight: bold; text-shadow: 1px 1px 0px white; }
+        .photo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; }
+        .photo-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); aspect-ratio: 1/1; position: relative; }
+        .photo-card img { width: 100%; height: 100%; object-fit: cover; }
+        .photo-card .placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 40px; color: #ffb7b2; }
+        .letter-section { background: rgba(255, 255, 255, 0.9); padding: 25px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.08); margin-bottom: 30px; width: 100%; text-align: center; }
+        .letter-text { font-size: 18px; line-height: 1.8; color: #555; min-height: 100px; }
+        .action-btn { background: linear-gradient(45deg, #ff4d6d, #ff6b81); color: white; border: none; padding: 18px 50px; font-size: 20px; border-radius: 50px; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4); transition: transform 0.2s, box-shadow 0.2s; font-weight: bold; margin-bottom: 20px; width: 100%; max-width: 300px; }
         .action-btn:active { transform: scale(0.95); }
-
-        /* 4. 歌词滚动条 */
-        .lyrics-scroll {
-            width: 100%;
-            background: rgba(255,255,255,0.8);
-            border-radius: 15px;
-            padding: 15px;
-            margin-top: 20px;
-            text-align: center;
-            font-style: italic;
-            color: #ff4d6d;
-            font-size: 16px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        /* 5. 底部版权/签名 */
-        .footer {
-            margin-top: 40px;
-            font-size: 14px;
-            color: #999;
-            text-align: center;
-        }
-
-        /* --- 特效层 --- */
-        #love-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 999;
-        }
-        .floating-text {
-            position: fixed;
-            font-size: 24px;
-            color: #ff4d6d;
-            font-weight: bold;
-            animation: floatUp 1.5s forwards;
-            z-index: 1000;
-            pointer-events: none;
-            text-shadow: 0 0 5px white;
-        }
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(0.5); opacity: 0; }
-            20% { transform: translateY(-20px) scale(1.2); opacity: 1; }
-            100% { transform: translateY(-100px) scale(1); opacity: 0; }
-        }
+        .lyrics-scroll { width: 100%; background: rgba(255,255,255,0.8); border-radius: 15px; padding: 15px; margin-top: 20px; text-align: center; font-style: italic; color: #ff4d6d; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .footer { margin-top: 40px; font-size: 14px; color: #999; text-align: center; }
+        #love-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
+        .floating-text { position: fixed; font-size: 24px; color: #ff4d6d; font-weight: bold; animation: floatUp 1.5s forwards; z-index: 1000; pointer-events: none; text-shadow: 0 0 5px white; }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(0.5); opacity: 0; } 20% { transform: translateY(-20px) scale(1.2); opacity: 1; } 100% { transform: translateY(-100px) scale(1); opacity: 0; } }
     </style>
 </head>
 <body>
-
-    <!-- 开场 -->
     <div id="intro-screen">
         <div class="big-heart" onclick="enterSite()">❤️</div>
         <div class="intro-text">点击爱心，开启我们的故事</div>
     </div>
-
-    <!-- 主页面 -->
     <div id="main-stage">
-        <!-- 背景装饰 -->
         <div class="bg-deco" id="bg-deco"></div>
         <canvas id="love-canvas"></canvas>
-
         <div class="container">
-            <!-- 1. 照片墙 -->
             <div class="photo-section">
                 <div class="section-title">📸 我们的甜蜜瞬间</div>
-                <div class="photo-grid">
-                    <!-- 这里放照片，如果没有照片，显示表情 -->
-                    <div class="photo-card">
-                        <img src="photo1.jpg" alt="photo1" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="placeholder">📷</div>
-                    </div>
-                    <div class="photo-card">
-                        <img src="photo2.jpg" alt="photo2" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                        <div class="placeholder">📷</div>
-                    </div>
+                <div class="photo-grid" id="photoGrid">
+                    <!-- 照片将通过 JS 自动生成 -->
                 </div>
             </div>
-
-            <!-- 2. 告白信 (打字机效果) -->
             <div class="letter-section">
                 <div class="section-title" style="font-size: 18px; margin-bottom: 10px;">💌 写给悦悦宝</div>
                 <div class="letter-text" id="typewriter"></div>
             </div>
-
-            <!-- 3. 互动按钮 -->
             <button class="action-btn" onclick="triggerSurprise()">点击领取抱抱 🤗</button>
-
-            <!-- 4. 歌词滚动 -->
-            <div class="lyrics-scroll" id="lyrics">
-                正在播放背景音乐...
-            </div>
-
-            <!-- 5. 底部 -->
-            <div class="footer">
-                Made with ❤️ for 悦悦宝<br>
-                2024.06.04
-            </div>
+            <div class="lyrics-scroll" id="lyrics">正在播放背景音乐...</div>
+            <div class="footer">Made with ❤️ for 悦悦宝<br>2024.06.04</div>
         </div>
     </div>
-
     <script>
         // --- 配置区域：修改你想说的话 ---
         const messages = [
@@ -271,28 +88,14 @@
             "以后的每一天，我都会一直陪在你身边。",
             "永远爱你，永远！❤️"
         ];
-        // 歌词配置
-        const lyrics = [
-            "当你出现在我的身边",
-            "世界突然变得好温暖",
-            "想和你一起看遍所有风景",
-            "做我最幸福的小公主"
-        ];
+        const lyrics = ["当你出现在我的身边", "世界突然变得好温暖", "想和你一起看遍所有风景", "做我最幸福的小公主"];
         // --------------------------------
 
-        let isPlaying = false;
-        let musicInterval;
-        let lyricInterval;
-
-        // 1. 进入页面
         function enterSite() {
-            const intro = document.getElementById('intro-screen');
-            const main = document.getElementById('main-stage');
-            
-            intro.style.opacity = '0';
+            document.getElementById('intro-screen').style.opacity = '0';
             setTimeout(() => {
-                intro.style.display = 'none';
-                main.style.display = 'block';
+                document.getElementById('intro-screen').style.display = 'none';
+                document.getElementById('main-stage').style.display = 'block';
                 initBackground();
                 startMusic();
                 startTyping();
@@ -300,7 +103,6 @@
             }, 800);
         }
 
-        // 2. 打字机效果
         function startTyping() {
             const el = document.getElementById('typewriter');
             el.innerHTML = '';
@@ -321,47 +123,35 @@
             type();
         }
 
-        // 3. 音乐与歌词
         function startMusic() {
             const audio = new Audio('bgm.mp3');
             audio.loop = true;
             audio.volume = 0.5;
             audio.play().catch(e => console.log("音乐需交互"));
-            
             let lIndex = 0;
-            musicInterval = setInterval(() => {
+            setInterval(() => {
                 lIndex = (lIndex + 1) % lyrics.length;
                 document.getElementById('lyrics').innerText = lyrics[lIndex];
             }, 3000);
         }
 
-        // 4. 惊喜互动
         function triggerSurprise() {
             startRain();
             const praises = ["好可爱！", "真漂亮！", "我最喜欢的悦悦宝！", "抱抱！", "爱你！", "你是我的宝藏！"];
             const txt = praises[Math.floor(Math.random() * praises.length)];
-            showPopup(txt);
-            
-            const btn = document.querySelector('.action-btn');
-            btn.innerText = "再抱一个！";
-            btn.style.background = "#ff6b81";
-            setTimeout(() => {
-                btn.innerText = "点击领取抱抱 🤗";
-                btn.style.background = "";
-            }, 2000);
-        }
-
-        function showPopup(text) {
             const el = document.createElement('div');
             el.className = 'floating-text';
-            el.innerText = text;
+            el.innerText = txt;
             el.style.left = Math.random() * 80 + 10 + '%';
             el.style.top = '40%';
             document.body.appendChild(el);
             setTimeout(() => el.remove(), 1500);
+            const btn = document.querySelector('.action-btn');
+            btn.innerText = "再抱一个！";
+            btn.style.background = "#ff6b81";
+            setTimeout(() => { btn.innerText = "点击领取抱抱 🤗"; btn.style.background = ""; }, 2000);
         }
 
-        // 5. 背景装饰生成
         function initBackground() {
             const container = document.getElementById('bg-deco');
             for(let i=0; i<10; i++) {
@@ -377,29 +167,37 @@
             }
         }
 
-        // 6. 爱心雨特效
+        // 生成照片
+        const photoGrid = document.getElementById('photoGrid');
+        for (let i = 1; i <= 10; i++) {
+            const div = document.createElement('div');
+            div.className = 'photo-card';
+            const img = document.createElement('img');
+            img.src = `photos/${i}.jpg`;
+            img.alt = `photo${i}`;
+            img.onerror = function() { this.style.display='none'; this.nextElementSibling.style.display='block'; };
+            const placeholder = document.createElement('div');
+            placeholder.className = 'placeholder';
+            placeholder.innerText = '📷';
+            div.appendChild(img);
+            div.appendChild(placeholder);
+            photoGrid.appendChild(div);
+        }
+
+        // 爱心雨
         const canvas = document.getElementById('love-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        let animationId;
-
         function initRain() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            window.addEventListener('resize', () => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            });
+            window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
         }
-
         function startRain() {
             if (particles.length > 0) return;
-            for(let i=0; i<100; i++) {
-                particles.push(new Particle());
-            }
+            for(let i=0; i<100; i++) particles.push(new Particle());
             animateRain();
         }
-
         class Particle {
             constructor() {
                 this.x = Math.random() * canvas.width;
@@ -411,18 +209,12 @@
                 this.rotation = Math.random() * 360;
                 this.rotationSpeed = Math.random() * 2 - 1;
             }
-
             update() {
                 this.y += this.speedY;
                 this.x += this.speedX;
                 this.rotation += this.rotationSpeed;
-
-                if (this.y > canvas.height) {
-                    this.y = -20;
-                    this.x = Math.random() * canvas.width;
-                }
+                if (this.y > canvas.height) { this.y = -20; this.x = Math.random() * canvas.width; }
             }
-
             draw() {
                 ctx.save();
                 ctx.translate(this.x, this.y);
@@ -439,13 +231,9 @@
                 ctx.restore();
             }
         }
-
         function animateRain() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
+            particles.forEach(p => { p.update(); p.draw(); });
             requestAnimationFrame(animateRain);
         }
     </script>
