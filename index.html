@@ -3,188 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>给悦悦宝的惊喜</title>
+    <title>给悦悦宝的专属惊喜</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* --- 全局重置 --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #fff0f5; /* 浅粉色背景 */
+            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            color: #333;
         }
 
-        /* 第一幕：开场 */
-        #intro {
+        /* --- 第一幕：开场动画 --- */
+        #intro-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, #ff9a9e 0%, #fecfef 100%);
+            background: radial-gradient(circle at center, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 999;
-            transition: opacity 0.8s ease;
+            z-index: 1000;
+            transition: opacity 1s ease;
         }
-
         .big-heart {
-            font-size: 120px;
+            font-size: 100px;
             color: #ff4d6d;
             cursor: pointer;
-            animation: beat 1.2s infinite;
-            user-select: none;
+            animation: heartbeat 1.2s infinite;
             text-shadow: 0 0 30px rgba(255, 77, 109, 0.6);
+            margin-bottom: 20px;
+            user-select: none;
         }
-
-        @keyframes beat {
+        @keyframes heartbeat {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+            50% { transform: scale(1.15); }
         }
-
-        .text {
-            margin-top: 30px;
+        .intro-text {
             color: white;
             font-size: 24px;
             font-weight: bold;
-            animation: fadeUp 1s ease 0.5s forwards;
+            animation: fadeIn 1s ease 0.5s forwards;
             opacity: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
+        @keyframes fadeIn { to { opacity: 1; } }
 
-        @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(-10px); }
-        }
-
-        /* 第二幕：主页 */
-        #main {
+        /* --- 第二幕：主舞台 (自适应手机) --- */
+        #main-stage {
             display: none;
-            width: 100%; height: 100%;
-            background: linear-gradient(180deg, #fff0f5 0%, #ffe4e1 100%);
+            width: 100%;
+            min-height: 100vh;
+            background: linear-gradient(to bottom, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            overflow-y: auto;
             position: relative;
+            padding-bottom: 50px;
+        }
+
+        /* 背景装饰层 */
+        .bg-deco {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
             overflow: hidden;
         }
-
-        /* 背景装饰 */
-        .bg-item {
-            position: absolute;
-            opacity: 0.6;
-            pointer-events: none;
-        }
-        .cloud { font-size: 60px; animation: float 8s ease-in-out infinite; }
-        .sakura { font-size: 24px; color: #ffb7b2; animation: fall 10s linear infinite; }
-
+        .cloud { font-size: 50px; position: absolute; animation: float 8s ease-in-out infinite; opacity: 0.6; }
+        .sakura { font-size: 20px; color: #ffb7b2; position: absolute; animation: fall 10s linear infinite; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
         @keyframes fall { 0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; } 100% { transform: translateY(110vh) rotate(360deg); opacity: 0; } }
 
-        /* 内容区 */
-        .content {
+        /* 内容容器：始终居中 */
+        .container {
             position: relative;
             z-index: 10;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 100%;
-            padding: 20px;
+        }
+
+        /* 1. 照片墙区域 */
+        .photo-section {
             text-align: center;
-        }
-
-        .photo-box {
-            width: 220px; height: 220px;
-            background: white;
-            border-radius: 50%;
-            padding: 10px;
-            box-shadow: 0 10px 40px rgba(255, 77, 109, 0.2);
             margin-bottom: 30px;
-            display: flex; justify-content: center; align-items: center;
-            border: 4px solid white;
+            width: 100%;
         }
-        .photo-box img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-        .photo-box .emoji { font-size: 80px; }
+        .section-title {
+            font-size: 22px;
+            color: #ff4d6d;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-shadow: 1px 1px 0px white;
+        }
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            width: 100%;
+        }
+        .photo-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            aspect-ratio: 1/1;
+            position: relative;
+        }
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-card .placeholder {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            color: #ffb7b2;
+        }
 
-        .msg-box {
+        /* 2. 告白信区域 */
+        .letter-section {
             background: rgba(255, 255, 255, 0.9);
             padding: 25px;
             border-radius: 20px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-            max-width: 80%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
             margin-bottom: 30px;
-            line-height: 1.6;
+            width: 100%;
+            text-align: center;
+        }
+        .letter-text {
             font-size: 18px;
+            line-height: 1.8;
             color: #555;
+            min-height: 100px;
         }
 
-        .btn {
-            background: #ff4d6d;
+        /* 3. 互动按钮 */
+        .action-btn {
+            background: linear-gradient(45deg, #ff4d6d, #ff6b81);
             color: white;
             border: none;
-            padding: 15px 40px;
+            padding: 18px 50px;
             font-size: 20px;
             border-radius: 50px;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
-            transition: all 0.3s;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-weight: bold;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 300px;
         }
-        .btn:active { transform: scale(0.95); }
+        .action-btn:active { transform: scale(0.95); }
 
-        /* 爱心雨 Canvas */
-        #canvas {
-            position: absolute;
+        /* 4. 歌词滚动条 */
+        .lyrics-scroll {
+            width: 100%;
+            background: rgba(255,255,255,0.8);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+            font-style: italic;
+            color: #ff4d6d;
+            font-size: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        /* 5. 底部版权/签名 */
+        .footer {
+            margin-top: 40px;
+            font-size: 14px;
+            color: #999;
+            text-align: center;
+        }
+
+        /* --- 特效层 --- */
+        #love-canvas {
+            position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
             pointer-events: none;
-            z-index: 5;
+            z-index: 999;
         }
-
-        /* 弹窗文字 */
-        .popup {
-            position: absolute;
+        .floating-text {
+            position: fixed;
             font-size: 24px;
             color: #ff4d6d;
             font-weight: bold;
-            animation: pop 1s forwards;
-            z-index: 20;
+            animation: floatUp 1.5s forwards;
+            z-index: 1000;
             pointer-events: none;
             text-shadow: 0 0 5px white;
         }
-        @keyframes pop {
-            0% { transform: scale(0) translateY(0); opacity: 0; }
-            30% { transform: scale(1.4) translateY(-30px); opacity: 1; }
-            100% { transform: scale(1) translateY(-60px); opacity: 0; }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.5); opacity: 0; }
+            20% { transform: translateY(-20px) scale(1.2); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 第一幕 -->
-    <div id="intro">
-        <div class="big-heart" id="heartBtn">❤️</div>
-        <div class="text">点击爱心，开启惊喜</div>
+    <!-- 开场 -->
+    <div id="intro-screen">
+        <div class="big-heart" onclick="enterSite()">❤️</div>
+        <div class="intro-text">点击爱心，开启我们的故事</div>
     </div>
 
-    <!-- 第二幕 -->
-    <div id="main">
-        <canvas id="canvas"></canvas>
+    <!-- 主页面 -->
+    <div id="main-stage">
         <!-- 背景装饰 -->
-        <div class="bg-item cloud" style="top:10%; left:10%;">☁️</div>
-        <div class="bg-item cloud" style="top:20%; right:15%; animation-delay:1s;">☁️</div>
-        <div class="bg-item sakura" style="left:10%;">🌸</div>
-        <div class="bg-item sakura" style="left:50%; animation-delay:2s;">🌸</div>
-        <div class="bg-item sakura" style="left:80%;">🌸</div>
+        <div class="bg-deco" id="bg-deco"></div>
+        <canvas id="love-canvas"></canvas>
 
-        <div class="content">
-            <div class="photo-box">
-                <!-- 如果有照片，取消下面这行的注释，并修改 src -->
-                <!-- <img src="your-photo.jpg" alt="悦悦宝"> -->
-                <div class="emoji">🥰</div>
+        <div class="container">
+            <!-- 1. 照片墙 -->
+            <div class="photo-section">
+                <div class="section-title">📸 我们的甜蜜瞬间</div>
+                <div class="photo-grid">
+                    <!-- 这里放照片，如果没有照片，显示表情 -->
+                    <div class="photo-card">
+                        <img src="photo1.jpg" alt="photo1" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                        <div class="placeholder">📷</div>
+                    </div>
+                    <div class="photo-card">
+                        <img src="photo2.jpg" alt="photo2" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                        <div class="placeholder">📷</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="msg-box" id="msgArea"></div>
+            <!-- 2. 告白信 (打字机效果) -->
+            <div class="letter-section">
+                <div class="section-title" style="font-size: 18px; margin-bottom: 10px;">💌 写给悦悦宝</div>
+                <div class="letter-text" id="typewriter"></div>
+            </div>
 
-            <button class="btn" id="hugBtn">领取抱抱 🤗</button>
+            <!-- 3. 互动按钮 -->
+            <button class="action-btn" onclick="triggerSurprise()">点击领取抱抱 🤗</button>
+
+            <!-- 4. 歌词滚动 -->
+            <div class="lyrics-scroll" id="lyrics">
+                正在播放背景音乐...
+            </div>
+
+            <!-- 5. 底部 -->
+            <div class="footer">
+                Made with ❤️ for 悦悦宝<br>
+                2024.06.04
+            </div>
         </div>
     </div>
 
     <script>
-        // --- 1. 在这里修改你想说的话 ---
-        const words = [
+        // --- 配置区域：修改你想说的话 ---
+        const messages = [
             "亲爱的悦悦宝，",
             "今天天气很好，就像你一样可爱。",
             "想告诉你，你是我生活中最温暖的阳光。",
@@ -192,81 +271,118 @@
             "以后的每一天，我都会一直陪在你身边。",
             "永远爱你，永远！❤️"
         ];
-        // -----------------------------
-
-        const intro = document.getElementById('intro');
-        const main = document.getElementById('main');
-        const heartBtn = document.getElementById('heartBtn');
-        const msgArea = document.getElementById('msgArea');
-        const hugBtn = document.getElementById('hugBtn');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
+        // 歌词配置
+        const lyrics = [
+            "当你出现在我的身边",
+            "世界突然变得好温暖",
+            "想和你一起看遍所有风景",
+            "做我最幸福的小公主"
+        ];
+        // --------------------------------
 
         let isPlaying = false;
-        let particles = [];
+        let musicInterval;
+        let lyricInterval;
 
-        // 点击爱心进入
-        heartBtn.addEventListener('click', function(e) {
-            e.stopPropagation(); // 防止冒泡
+        // 1. 进入页面
+        function enterSite() {
+            const intro = document.getElementById('intro-screen');
+            const main = document.getElementById('main-stage');
+            
             intro.style.opacity = '0';
             setTimeout(() => {
                 intro.style.display = 'none';
                 main.style.display = 'block';
+                initBackground();
                 startMusic();
                 startTyping();
                 initRain();
             }, 800);
-        });
+        }
 
-        // 打字机效果
-        let i = 0;
+        // 2. 打字机效果
         function startTyping() {
+            const el = document.getElementById('typewriter');
+            el.innerHTML = '';
+            let i = 0;
             function type() {
-                if (i < words.length) {
-                    const line = words[i];
-                    msgArea.innerHTML = '';
+                if (i < messages.length) {
+                    const line = messages[i];
+                    el.innerHTML = '';
                     for(let j=0; j<line.length; j++) {
-                        msgArea.innerHTML += line.charAt(j);
-                        setTimeout(type, 100); // 打字速度
+                        el.innerHTML += line.charAt(j);
+                        setTimeout(type, 100);
                         return;
                     }
                     i++;
-                    setTimeout(type, 500); // 换行间隔
+                    setTimeout(type, 600);
                 }
             }
             type();
         }
 
-        // 音乐播放
+        // 3. 音乐与歌词
         function startMusic() {
-            // 确保你的音乐文件名叫 bgm.mp3
             const audio = new Audio('bgm.mp3');
             audio.loop = true;
             audio.volume = 0.5;
-            audio.play().catch(e => console.log("音乐播放需用户交互"));
+            audio.play().catch(e => console.log("音乐需交互"));
+            
+            let lIndex = 0;
+            musicInterval = setInterval(() => {
+                lIndex = (lIndex + 1) % lyrics.length;
+                document.getElementById('lyrics').innerText = lyrics[lIndex];
+            }, 3000);
         }
 
-        // 抱抱特效
-        hugBtn.addEventListener('click', function() {
+        // 4. 惊喜互动
+        function triggerSurprise() {
             startRain();
-            const praises = ["好可爱！", "真漂亮！", "我最喜欢的悦悦宝！", "抱抱！", "爱你！"];
+            const praises = ["好可爱！", "真漂亮！", "我最喜欢的悦悦宝！", "抱抱！", "爱你！", "你是我的宝藏！"];
             const txt = praises[Math.floor(Math.random() * praises.length)];
             showPopup(txt);
-            hugBtn.innerText = "再抱一个！";
-            setTimeout(() => hugBtn.innerText = "领取抱抱 🤗", 2000);
-        });
+            
+            const btn = document.querySelector('.action-btn');
+            btn.innerText = "再抱一个！";
+            btn.style.background = "#ff6b81";
+            setTimeout(() => {
+                btn.innerText = "点击领取抱抱 🤗";
+                btn.style.background = "";
+            }, 2000);
+        }
 
         function showPopup(text) {
             const el = document.createElement('div');
-            el.className = 'popup';
+            el.className = 'floating-text';
             el.innerText = text;
             el.style.left = Math.random() * 80 + 10 + '%';
             el.style.top = '40%';
             document.body.appendChild(el);
-            setTimeout(() => el.remove(), 1000);
+            setTimeout(() => el.remove(), 1500);
         }
 
-        // 爱心雨
+        // 5. 背景装饰生成
+        function initBackground() {
+            const container = document.getElementById('bg-deco');
+            for(let i=0; i<10; i++) {
+                const type = Math.random() > 0.5 ? 'cloud' : 'sakura';
+                const el = document.createElement('div');
+                el.className = type;
+                el.innerText = type === 'cloud' ? '☁️' : '🌸';
+                el.style.left = Math.random() * 100 + '%';
+                el.style.top = Math.random() * 100 + '%';
+                el.style.animationDelay = Math.random() * 5 + 's';
+                el.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                container.appendChild(el);
+            }
+        }
+
+        // 6. 爱心雨特效
+        const canvas = document.getElementById('love-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationId;
+
         function initRain() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
@@ -279,37 +395,58 @@
         function startRain() {
             if (particles.length > 0) return;
             for(let i=0; i<100; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: -20,
-                    size: Math.random() * 10 + 5,
-                    speed: Math.random() * 3 + 2,
-                    color: `hsl(${Math.random()*40+340}, 100%, 70%)`
-                });
+                particles.push(new Particle());
             }
-            animate();
+            animateRain();
         }
 
-        function animate() {
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = -20;
+                this.size = Math.random() * 10 + 5;
+                this.speedY = Math.random() * 3 + 2;
+                this.speedX = Math.random() * 2 - 1;
+                this.color = `hsl(${Math.random() * 40 + 340}, 100%, 70%)`;
+                this.rotation = Math.random() * 360;
+                this.rotationSpeed = Math.random() * 2 - 1;
+            }
+
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                this.rotation += this.rotationSpeed;
+
+                if (this.y > canvas.height) {
+                    this.y = -20;
+                    this.x = Math.random() * canvas.width;
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation * Math.PI / 180);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(0, -this.size / 2, -this.size / 2, -this.size, -this.size / 2, -this.size / 2);
+                ctx.bezierCurveTo(-this.size / 2, -this.size / 2, 0, -this.size / 2, 0, -this.size / 2);
+                ctx.bezierCurveTo(0, -this.size / 2, this.size / 2, -this.size / 2, this.size / 2, -this.size / 2);
+                ctx.bezierCurveTo(this.size / 2, -this.size / 2, this.size / 2, -this.size, this.size / 2, -this.size / 2);
+                ctx.bezierCurveTo(this.size / 2, -this.size, 0, -this.size / 2, 0, 0);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function animateRain() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach(p => {
-                ctx.fillStyle = p.color;
-                ctx.beginPath();
-                // 画爱心
-                const x = p.x;
-                const y = p.y;
-                const s = p.size;
-                ctx.moveTo(x, y);
-                ctx.bezierCurveTo(x, y-s/2, x-s/2, y-s, x-s/2, y-s/2);
-                ctx.bezierCurveTo(x-s/2, y-s/2, x, y-s/2, x, y-s/2);
-                ctx.bezierCurveTo(x, y-s/2, x+s/2, y-s/2, x+s/2, y-s/2);
-                ctx.bezierCurveTo(x+s/2, y-s/2, x+s/2, y-s, x+s/2, y-s/2);
-                ctx.bezierCurveTo(x+s/2, y-s, x, y-s/2, x, y);
-                ctx.fill();
-                p.y += p.speed;
-                if(p.y > canvas.height) p.y = -20;
+                p.update();
+                p.draw();
             });
-            requestAnimationFrame(animate);
+            requestAnimationFrame(animateRain);
         }
     </script>
 </body>
