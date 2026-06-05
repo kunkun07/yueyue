@@ -52,6 +52,8 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            position: relative; /* 为 Canvas 定位提供参照 */
+            z-index: 10; /* 确保内容在 Canvas 之上 */
         }
 
         /* 标题 */
@@ -83,9 +85,9 @@
         /* 幻灯片区域 */
         .slider-container {
             width: 100%;
-            height: 400px; /* 稍微调高一点，单张图更清晰 */
+            height: 400px;
             position: relative;
-            overflow: hidden;
+            overflow: hidden; /* 关键：隐藏跑出去的爱心 */
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             margin-bottom: 20px;
@@ -113,7 +115,7 @@
         .slide img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* 保持比例填满 */
+            object-fit: cover;
             display: block;
         }
 
@@ -211,17 +213,13 @@
     <script>
         // --- 配置区域 ---
         const config = {
-            // 确保文件名是 1.jpg 到 10.jpg
             images: [
                 '1.jpg', '2.jpg', '3.jpg', '4.jpg', 
                 '5.jpg', '6.jpg', '7.jpg', '8.jpg', 
                 '9.jpg', '10.jpg'
             ],
-            // 每次显示几张 (现在是 1，单张播放)
             slidesToShow: 1, 
-            // 切换间隔 (毫秒)
             interval: 5000,
-            // 信件内容
             messages: [
                 "亲爱的悦悦宝，\n\n遇见你，是我这辈子最幸运的事。",
                 "看着你的照片，\n我就忍不住想一直一直喜欢你。",
@@ -236,6 +234,8 @@
         let isPlaying = false;
         let isTyping = false;
         let bgmElement = document.getElementById('bgm');
+        let canvas = null;
+        let animationId = null;
 
         // 初始化幻灯片结构
         function initSlider() {
@@ -290,16 +290,13 @@
                     slide.classList.remove('active');
                 });
 
-                // 移动到下一张
                 currentSlideIndex = (currentSlideIndex + 1) % config.images.length;
                 
-                // 显示当前图片
                 const newSlides = document.querySelectorAll('.slide');
                 if (newSlides[currentSlideIndex]) {
                     newSlides[currentSlideIndex].classList.add('active');
                 }
 
-                // 更新文字
                 updateLetter();
 
             }, config.interval);
@@ -353,23 +350,40 @@
             createHeartRain();
         });
 
-        // 爱心雨效果
+        // 爱心雨效果 (修复版：限制在容器内)
         function createHeartRain() {
-            const canvas = document.createElement('canvas');
+            // 获取幻灯片容器作为画布背景
+            const container = document.querySelector('.slider-container');
+            
+            // 如果画布已存在，先移除
+            if (canvas) {
+                canvas.remove();
+            }
+
+            canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            document.body.appendChild(canvas);
+            
+            // 设置画布大小与容器一致
+            const rect = container.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+
+            // 将画布定位到容器左上角
+            canvas.style.position = 'absolute';
+            canvas.style.top = '0';
+            canvas.style.left = '0';
+            canvas.style.zIndex = '10'; // 确保在图片之上
+            container.appendChild(canvas);
 
             const hearts = [];
-            const heartCount = 50;
+            const heartCount = 30; // 减少数量，避免太乱
 
             for (let i = 0; i < heartCount; i++) {
                 hearts.push({
                     x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height - canvas.height,
-                    size: Math.random() * 20 + 10,
-                    speed: Math.random() * 5 + 2,
+                    y: Math.random() * canvas.height - canvas.height, // 从上方开始
+                    size: Math.random() * 15 + 10,
+                    speed: Math.random() * 3 + 2,
                     color: `hsl(${Math.random() * 60 + 330}, 100%, 60%)`
                 });
             }
@@ -380,24 +394,28 @@
                     ctx.fillStyle = heart.color;
                     ctx.font = `${heart.size}px Arial`;
                     ctx.fillText('❤️', heart.x, heart.y);
+                    
                     heart.y += heart.speed;
+                    
+                    // 如果爱心跑到容器底部，重置到顶部
                     if (heart.y > canvas.height) {
                         heart.y = -20;
                         heart.x = Math.random() * canvas.width;
                     }
                 });
-                requestAnimationFrame(draw);
+                animationId = requestAnimationFrame(draw);
             }
 
-            let duration = 0;
-            const interval = setInterval(() => {
-                duration += 10;
-                draw();
-                if (duration > 3000) {
-                    clearInterval(interval);
-                    canvas.remove();
+            draw();
+
+            // 动画持续 3 秒后停止
+            setTimeout(() => {
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
                 }
-            }, 10);
+                canvas.remove();
+                canvas = null;
+            }, 3000);
         }
 
         // 初始化
